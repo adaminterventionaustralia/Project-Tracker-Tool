@@ -1,0 +1,16 @@
+{
+  "$schema": "./context.schema.json",
+  "project": {
+    "name": "",
+    "goal": "",
+    "stack": [],
+    "updated": ""
+  },
+  "current_focus": "",
+  "tasks": [],
+  "decisions": [],
+  "key_files": [],
+  "open_questions": [],
+  "glossary": {},
+  "session_log": []
+}

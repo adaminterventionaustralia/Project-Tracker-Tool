@@ -1,0 +1,2 @@
+# Local harness state — machine-specific, not shared.
+.harness-state.json

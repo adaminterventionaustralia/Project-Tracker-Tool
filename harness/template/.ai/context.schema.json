@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://local/ai-harness/context.schema.json",
+  "title": "AI Harness Context",
+  "description": "Compact, session-persistent working memory for an AI coding assistant. Source of truth for orientation; read at session start, updated as work proceeds.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project", "current_focus", "tasks"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "goal"],
+      "properties": {
+        "name": { "type": "string", "description": "Project name." },
+        "goal": { "type": "string", "description": "One-sentence north star: what this project is for." },
+        "stack": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key technologies / languages / frameworks."
+        },
+        "updated": { "type": "string", "description": "ISO date (YYYY-MM-DD) this file was last updated." }
+      }
+    },
+    "current_focus": {
+      "type": "string",
+      "description": "The single thing being worked on right now. First thing a new session should read."
+    },
+    "tasks": {
+      "type": "array",
+      "description": "Live to-do list. Prune completed items that no longer carry context.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "status"],
+        "properties": {
+          "id": { "type": "string", "description": "Short stable id, e.g. 't1'." },
+          "title": { "type": "string" },
+          "status": { "type": "string", "enum": ["todo", "doing", "done", "blocked"] },
+          "notes": { "type": "string", "description": "Optional terse detail or blocker reason." }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Choices already made. Do not re-litigate these.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision"],
+        "properties": {
+          "date": { "type": "string", "description": "ISO date (YYYY-MM-DD)." },
+          "decision": { "type": "string" },
+          "why": { "type": "string", "description": "One-line rationale." }
+        }
+      }
+    },
+    "key_files": {
+      "type": "array",
+      "description": "Map of where important things live, so the AI doesn't have to search.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "role"],
+        "properties": {
+          "path": { "type": "string" },
+          "role": { "type": "string", "description": "What this file/dir is responsible for." }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Known unknowns waiting on the user or on investigation."
+    },
+    "glossary": {
+      "type": "object",
+      "description": "Project-specific terms → definitions.",
+      "additionalProperties": { "type": "string" }
+    },
+    "session_log": {
+      "type": "array",
+      "description": "Recent history, newest first. Keep ~5-8 entries; summarize or drop older ones.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "summary"],
+        "properties": {
+          "date": { "type": "string", "description": "ISO date (YYYY-MM-DD)." },
+          "summary": { "type": "string", "description": "One line: what changed this session." },
+          "next": { "type": "string", "description": "Concrete next step for the following session." }
+        }
+      }
+    }
+  }
+}

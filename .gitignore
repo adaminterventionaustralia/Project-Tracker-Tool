@@ -1,12 +1,16 @@
 # Generated scan output — contains details about the projects being scanned.
 # Keep all of it local; never commit it to a public repo.
-reports/
-Archive/
-daily-digest*
-dashboard.md
+/reports/
+/Archive/
+/daily-digest*
+/dashboard.md
 *.html
 
-# Local tooling state
-.ai/
-.claude/
+# This tool's own harness state.
+# Root-anchored (leading /) on purpose: the bundled harness/template/.ai/ and
+# harness/template/.claude/ are shipped files and must stay tracked. Do not
+# drop the leading slash.
+/.ai/
+/.claude/
+
 __pycache__/

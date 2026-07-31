@@ -40,8 +40,18 @@ def has_harness(project: Path) -> bool:
     return (project / 'CLAUDE.md').exists() and (project / '.ai' / 'context.json').exists()
 
 
+def find_installer(tool_dir: Path, root: Path) -> Path | None:
+    """Locate the harness installer: the copy bundled with this tool first, then a
+    sibling AIHarness/ checkout (the older layout, kept working for existing setups)."""
+    for candidate in (tool_dir / 'harness' / 'install.ps1',
+                      root / 'AIHarness' / 'install.ps1'):
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def install_harness(installer: Path, project: Path) -> bool:
-    """Run AIHarness/install.ps1 against a project missing the harness."""
+    """Run the harness install.ps1 against a project missing the harness."""
     cmd = ['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass',
            '-File', str(installer), '-Path', str(project)]
     try:
@@ -111,16 +121,16 @@ def main():
 
     # Install the AI harness into any sibling project that doesn't have it yet.
     if not args.skip_harness:
-        installer = root / 'AIHarness' / 'install.ps1'
-        if installer.exists():
+        installer = find_installer(tool_dir, root)
+        if installer is None:
+            print("Skipping harness install: no harness/install.ps1 found")
+        else:
             missing = [p for p in projects if not has_harness(p)]
             if missing:
                 print(f"Installing AI harness into {len(missing)} project(s) missing it...")
                 for proj in missing:
                     print(f"  Harness: {proj.name}")
                     install_harness(installer, proj)
-        else:
-            print(f"Skipping harness install: {installer} not found")
 
     # Locate project-scan.py (same directory as this script)
     scanner = Path(__file__).parent / 'project-scan.py'
