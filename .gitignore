@@ -1,0 +1,12 @@
+# Generated scan output — contains details about the projects being scanned.
+# Keep all of it local; never commit it to a public repo.
+reports/
+Archive/
+daily-digest*
+dashboard.md
+*.html
+
+# Local tooling state
+.ai/
+.claude/
+__pycache__/
