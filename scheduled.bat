@@ -29,9 +29,29 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-echo Pushing results...
-git add .
-git commit -m "Update compiled report"
-git push
+REM origin is a PUBLIC repo. `git add -u` stages only files that are ALREADY tracked,
+REM so scan output and any other new file can never be published by this script --
+REM adding a new file to the public repo has to be a deliberate `git add`.
+echo Pushing source changes...
+git add -u
+git diff --cached --quiet
+if %errorlevel% equ 0 goto :nochanges
 
+git commit -m "Update project tracker source"
+if %errorlevel% neq 0 (
+    echo git commit failed. Exiting.
+    exit /b %errorlevel%
+)
+
+git push
+if %errorlevel% neq 0 (
+    echo git push failed. Exiting.
+    exit /b %errorlevel%
+)
+goto :done
+
+:nochanges
+echo No source changes to push.
+
+:done
 echo Done.
